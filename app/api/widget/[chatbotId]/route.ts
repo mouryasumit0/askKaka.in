@@ -4,11 +4,11 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(
   request: NextRequest,
-  context: { params: { chatbotId: string } }
+  {params}: { params: Promise<{ chatbotId: string }> }
 ) {
   const supabaseAdmin = await createClientAdmin();
   try {
-    const chatbotId = context.params.chatbotId.replace('.js', '')
+    const chatbotId = (await params).chatbotId.replace('.js', '')
 
     // Verify chatbot exists and is active
     const { data: chatbot, error } = await supabaseAdmin

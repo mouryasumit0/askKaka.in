@@ -153,7 +153,7 @@ export class WebScraper {
       }
     })
     
-    return [...new Set(links)] // Remove duplicates
+    return Array.from(new Set(links)) // Remove duplicates
   }
 
   private cleanContent(text: string): string {
