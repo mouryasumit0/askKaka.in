@@ -7,8 +7,8 @@ if (!process.env.GEMINI_API_KEY) {
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
 
 // Models for different tasks
-const textModel = genAI.getGenerativeModel({ model: 'gemini-pro' })
-const embeddingModel = genAI.getGenerativeModel({ model: 'embedding-001' })
+const textModel = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
+const embeddingModel = genAI.getGenerativeModel({ model: 'text-embedding-004' })
 
 export async function generateEmbedding(text: string): Promise<number[]> {
   try {
@@ -59,6 +59,7 @@ Question: ${question}
 Please provide a concise and helpful response. If the information is not available in the context, politely say that you cannot help with that specific question.`
     }
 
+    console.log('Generating response with prompt:', prompt)
     const result = await textModel.generateContent(prompt)
     const response = await result.response
     return response.text()

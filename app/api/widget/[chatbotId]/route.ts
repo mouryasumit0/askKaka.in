@@ -1,10 +1,12 @@
+import { createClientAdmin } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+// import { supabaseAdmin } from '@/lib/supabase'
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { chatbotId: string } }
 ) {
+  const supabaseAdmin = await createClientAdmin();
   try {
     const chatbotId = params.chatbotId.replace('.js', '')
 

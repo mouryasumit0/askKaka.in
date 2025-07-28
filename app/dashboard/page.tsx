@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase, type Chatbot } from '@/lib/supabase'
+// import { supabase, type Chatbot } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -11,7 +11,10 @@ import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { MessageCircle, Plus, Settings, BarChart3, LogOut, Globe, Clock, Users, Copy, CheckCircle } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { type Chatbot } from '@/lib/interface/databasetypes'
+import { createClient } from '@/lib/supabase/client'
 
+const supabase = createClient()
 interface DashboardData {
   profile: any
   chatbots: Chatbot[]
@@ -82,6 +85,8 @@ export default function DashboardPage() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
 
+      console.log('Creating chatbot for user:', user.id)
+      console.log('Create form data:', createForm)
       const response = await fetch('/api/chatbots', {
         method: 'POST',
         headers: {

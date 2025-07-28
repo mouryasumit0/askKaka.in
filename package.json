@@ -80,5 +80,8 @@
     "vaul": "^0.9.9",
     "winston": "^3.17.0",
     "zod": "^4.0.10"
+  },
+  "devDependencies": {
+    "supabase": "^2.31.8"
   }
 }

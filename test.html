@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Chatbot Widget</title>
+</head>
+<body>
+  <h1>Testing AskKaka Chatbot Widget</h1>
+
+  <script>
+(function(w,d,s,c){
+  w.AskKakaConfig = w.AskKakaConfig || { chatbotId: '237a87b2-510f-4a11-a1fd-78abd351b2b3' };
+  var js = d.createElement(s);
+  js.src = 'http://localhost:3000/api/widget/' + c + '.js';
+  js.async = true;
+  d.head.appendChild(js);
+})(window, document, 'script', '237a87b2-510f-4a11-a1fd-78abd351b2b3');
+</script>
+
+</body>
+</html>

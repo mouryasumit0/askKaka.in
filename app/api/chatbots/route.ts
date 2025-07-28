@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase, supabaseAdmin } from '@/lib/supabase'
+// import { supabase, supabaseAdmin } from '@/lib/supabase'
 import { logger, trackError } from '@/lib/monitoring'
 import { z } from 'zod'
+import { createClientAdmin } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/client'
+
+const supabase = createClient()
 
 const CreateChatbotSchema = z.object({
   website_url: z.string().url('Invalid website URL'),
@@ -10,6 +14,7 @@ const CreateChatbotSchema = z.object({
 
 export async function POST(request: NextRequest) {
   const startTime = Date.now()
+  const supabaseAdmin = await createClientAdmin()
   
   try {
     // Get user from auth header
@@ -32,7 +37,7 @@ export async function POST(request: NextRequest) {
     if (!validation.success) {
       return NextResponse.json({ 
         error: 'Invalid request data',
-        details: validation.error.errors
+        details: validation.error.issues
       }, { status: 400 })
     }
 
@@ -53,8 +58,9 @@ export async function POST(request: NextRequest) {
       .select()
       .single()
 
+      console.log(chatbot, createError)
     if (createError) {
-      throw new Error(`Failed to create chatbot: ${createError.message}`)
+      throw new Error(`Failed tooooooooooooooooo create chatbot: ${createError.message}`)
     }
 
     // Generate script tag

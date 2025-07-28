@@ -1,16 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+// import { supabaseAdmin } from '@/lib/supabase'
 import { WebScraper, chunkContent } from '@/lib/scraper'
 import { generateEmbedding } from '@/lib/gemini'
 import { logger, trackError } from '@/lib/monitoring'
 import { z } from 'zod'
+import { createClientAdmin } from '@/lib/supabase/server'
 
 const TrainingRequestSchema = z.object({
   chatbot_id: z.string().uuid('Invalid chatbot ID'),
   website_url: z.string().url('Invalid website URL')
 })
 
+
 export async function POST(request: NextRequest) {
+  const supabaseAdmin = await createClientAdmin();
   try {
     const body = await request.json()
     const validation = TrainingRequestSchema.safeParse(body)
@@ -18,7 +21,7 @@ export async function POST(request: NextRequest) {
     if (!validation.success) {
       return NextResponse.json({ 
         error: 'Invalid request data',
-        details: validation.error.errors
+        details: validation.error.issues
       }, { status: 400 })
     }
 
@@ -54,6 +57,7 @@ export async function POST(request: NextRequest) {
 
 async function trainChatbot(chatbotId: string, websiteUrl: string) {
   try {
+    const supabaseAdmin = await createClientAdmin();
     logger.info('Starting chatbot training', { chatbotId, websiteUrl })
 
     // Clear existing content for this chatbot
@@ -148,6 +152,7 @@ async function trainChatbot(chatbotId: string, websiteUrl: string) {
       chatbotId, 
       error: error.message 
     })
+    const supabaseAdmin = await createClientAdmin();
 
     // Mark as error
     await supabaseAdmin
@@ -163,6 +168,7 @@ async function trainChatbot(chatbotId: string, websiteUrl: string) {
 }
 
 async function updateTrainingProgress(chatbotId: string, progress: number) {
+  const supabaseAdmin = await createClientAdmin();
   await supabaseAdmin
     .from('chatbots')
     .update({ training_progress: progress })
