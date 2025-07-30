@@ -59,6 +59,7 @@ async function trainChatbot(chatbotId: string, websiteUrl: string) {
   try {
     const supabaseAdmin = await createClientAdmin();
     logger.info('Starting chatbot training', { chatbotId, websiteUrl })
+    console.log('Starting chatbot training......', { chatbotId, websiteUrl })
 
     // Clear existing content for this chatbot
     await supabaseAdmin
@@ -72,20 +73,20 @@ async function trainChatbot(chatbotId: string, websiteUrl: string) {
     // Scrape website
     const scraper = new WebScraper()
     const pages = await scraper.scrapeWebsite(websiteUrl).then(pages => {
-      logger.info('Website scraped successfully', { chatbotId, pagesCount: pages.length })
+      console.log('Website scraped successfully', { chatbotId, pagesCount: pages.length })
       return pages
     }).catch(error => {
-      logger.error('Failed to scrape website', { chatbotId, websiteUrl, error: error.message })
+      console.error('Failed to scrape website', { chatbotId, websiteUrl, error: error.message })
       throw new Error(`Failed to scrape website: ${error.message}`)
     }).finally(() => {
-      logger.info('Web scraping completed', { chatbotId, websiteUrl })
+      console.log('Web scraping completed', { chatbotId, websiteUrl })
     })
     
     if (pages.length === 0) {
       throw new Error('No content found on website')
     }
 
-    logger.info('Website scraped successfully', { 
+    console.log('Website scraped successfully', { 
       chatbotId, 
       pagesCount: pages.length 
     })
@@ -176,7 +177,7 @@ async function trainChatbot(chatbotId: string, websiteUrl: string) {
 }
 
 async function updateTrainingProgress(chatbotId: string, progress: number) {
-  logger.info('Updating training progress', { chatbotId, progress })
+  console.log('Updating training progress', { chatbotId, progress })
   const supabaseAdmin = await createClientAdmin();
   await supabaseAdmin
     .from('chatbots')
