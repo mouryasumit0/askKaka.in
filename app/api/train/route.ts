@@ -7,8 +7,8 @@ import { z } from 'zod'
 import { createClientAdmin } from '@/lib/supabase/server'
 
 const TrainingRequestSchema = z.object({
-  chatbot_id: z.string().uuid('Invalid chatbot ID'),
-  website_url: z.string().url('Invalid website URL')
+  chatbot_id: z.uuid('Invalid chatbot ID'),
+  website_url: z.url('Invalid website URL')
 })
 
 
@@ -71,7 +71,15 @@ async function trainChatbot(chatbotId: string, websiteUrl: string) {
 
     // Scrape website
     const scraper = new WebScraper()
-    const pages = await scraper.scrapeWebsite(websiteUrl)
+    const pages = await scraper.scrapeWebsite(websiteUrl).then(pages => {
+      logger.info('Website scraped successfully', { chatbotId, pagesCount: pages.length })
+      return pages
+    }).catch(error => {
+      logger.error('Failed to scrape website', { chatbotId, websiteUrl, error: error.message })
+      throw new Error(`Failed to scrape website: ${error.message}`)
+    }).finally(() => {
+      logger.info('Web scraping completed', { chatbotId, websiteUrl })
+    })
     
     if (pages.length === 0) {
       throw new Error('No content found on website')
@@ -168,6 +176,7 @@ async function trainChatbot(chatbotId: string, websiteUrl: string) {
 }
 
 async function updateTrainingProgress(chatbotId: string, progress: number) {
+  logger.info('Updating training progress', { chatbotId, progress })
   const supabaseAdmin = await createClientAdmin();
   await supabaseAdmin
     .from('chatbots')

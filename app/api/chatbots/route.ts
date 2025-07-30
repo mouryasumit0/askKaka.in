@@ -81,7 +81,14 @@ export async function POST(request: NextRequest) {
       .eq('id', chatbot.id)
 
     // Start training process asynchronously
-    fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/train`, {
+
+    logger.info('Starting training for chatbot', {
+      chatbotId: chatbot.id,
+      websiteUrl: website_url
+    })
+    const apiUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    console.log('Training API URL:', apiUrl)
+    fetch(`${apiUrl}/api/train`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -92,6 +99,11 @@ export async function POST(request: NextRequest) {
       })
     }).catch(error => {
       console.error('Failed to start training:', error)
+    }).finally(() => {
+      logger.info('Training process initiated for chatbot', {
+        chatbotId: chatbot.id,
+        websiteUrl: website_url
+      })
     })
 
     const responseTime = Date.now() - startTime
