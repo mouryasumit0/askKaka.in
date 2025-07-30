@@ -65,7 +65,11 @@ async function trainChatbot(chatbotId: string, websiteUrl: string) {
     await supabaseAdmin
       .from('content_chunks')
       .delete()
-      .eq('chatbot_id', chatbotId)
+      .eq('chatbot_id', chatbotId).then(() => {
+        console.log('Existing content cleared for chatbot', chatbotId)
+      })
+
+      console.log('Existing content cleared for chatbot....', chatbotId)
 
     // Update progress
     await updateTrainingProgress(chatbotId, 10)
