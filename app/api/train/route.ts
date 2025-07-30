@@ -185,7 +185,9 @@ async function updateTrainingProgress(chatbotId: string, progress: number) {
   console.log('Updating training progress', { chatbotId, progress })
   const { data, error } = await supabaseAdmin
   .from('chatbots')
-  .upsert({ id: chatbotId, training_progress: progress });
+  .update({ training_progress: progress })
+  .eq('id', chatbotId);
+
 
   if (error) {
     console.error('Error updating training progress:', error.message);
