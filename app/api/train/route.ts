@@ -183,15 +183,16 @@ async function trainChatbot(chatbotId: string, websiteUrl: string) {
 async function updateTrainingProgress(chatbotId: string, progress: number) {
   const supabaseAdmin = await createClientAdmin();
   console.log('Updating training progress', { chatbotId, progress })
-  try {
-    await supabaseAdmin
-      .from('chatbots')
-      .update({ training_progress: progress })
-      .eq('id', chatbotId)
-  }catch (error) {
-    console.error('Failed to update training progress', { chatbotId, progress, error: error })
+  const { data, error } = await supabaseAdmin
+  .from('chatbots')
+  .upsert({ id: chatbotId, training_progress: progress });
+
+  if (error) {
+    console.error('Error updating training progress:', error.message);
+  } else {
+    console.log('Training progress updated:', data);
   }
-  console.log('Training progress updated', { chatbotId, progress })
+
   // await supabaseAdmin
   //   .from('chatbots')
   //   .update({ training_progress: progress })
