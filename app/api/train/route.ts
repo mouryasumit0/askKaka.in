@@ -62,14 +62,14 @@ async function trainChatbot(chatbotId: string, websiteUrl: string) {
     console.log('Starting chatbot training......', { chatbotId, websiteUrl })
 
     // Clear existing content for this chatbot
-    await supabaseAdmin
-      .from('content_chunks')
-      .delete()
-      .eq('chatbot_id', chatbotId).then(() => {
-        console.log('Existing content cleared for chatbot', chatbotId)
-      })
+    // await supabaseAdmin
+    //   .from('content_chunks')
+    //   .delete()
+    //   .eq('chatbot_id', chatbotId).then(() => {
+    //     console.log('Existing content cleared for chatbot', chatbotId)
+    //   })
 
-      console.log('Existing content cleared for chatbot....', chatbotId)
+    //   console.log('Existing content cleared for chatbot....', chatbotId)
 
     // Update progress
     await updateTrainingProgress(chatbotId, 10)
