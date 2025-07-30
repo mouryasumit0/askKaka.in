@@ -23,6 +23,7 @@ export default function SignupPage() {
   })
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+  const [isSignedUp, setIsSignedUp] = useState(false);
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -50,24 +51,29 @@ export default function SignupPage() {
 
       if (authData.user) {
         // Create profile
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .insert([
-            {
-              id: authData.user.id,
-              email: formData.email,
-              full_name: formData.fullName,
-              company_name: formData.companyName,
-              website_url: formData.websiteUrl
-            }
-          ])
+        // const { error: profileError } = await supabase
+        //   .from('profiles')
+        //   .insert([
+        //     {
+        //       id: authData.user.id,
+        //       email: formData.email,
+        //       full_name: formData.fullName,
+        //       company_name: formData.companyName,
+        //       website_url: formData.websiteUrl
+        //     }
+        //   ])
 
-        if (profileError) {
-          console.error('Profile creation error:', profileError)
-        }
+        // if (profileError) {
+        //   console.error('Profile creation error:', profileError)
+        // }
 
         // Redirect to dashboard
-        router.push('/dashboard')
+        // router.push('/dashboard')
+
+        setIsSignedUp(true);
+        // setTimeout(() => {
+        //   router.push('/login')
+        // }, 3000)
       }
     } catch (error: any) {
       console.error('Signup error:', error)
@@ -106,6 +112,17 @@ export default function SignupPage() {
               {error && (
                 <Alert variant="destructive">
                   <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
+              {isSignedUp && (
+                <Alert
+                  variant="default"
+                  className="bg-green-50 border-green-500 text-green-800"
+                >
+                  <AlertDescription>
+                    Account created! Please check your email to verify your
+                    account before logging in.
+                  </AlertDescription>
                 </Alert>
               )}
 
