@@ -38,7 +38,20 @@ export async function POST(request: NextRequest) {
       .eq('id', chatbot_id)
 
     // Start training process asynchronously
-    trainChatbot(chatbot_id, website_url)
+    try {
+      await trainChatbot(chatbot_id, website_url)
+    } catch (error) {
+      console.error('Training process failed:', error)
+      await supabaseAdmin
+        .from('chatbots')
+        .update({
+          status: 'error',
+          training_progress: 0
+        })
+        .eq('id', chatbot_id)
+      // trackError(error, { chatbotId: chatbot_id, operation: 'training' })
+    }
+    // await trainChatbot(chatbot_id, website_url)
 
     return NextResponse.json({ 
       message: 'Training started',
